@@ -15,7 +15,7 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 ## Ho to create new sound arrays:
 
 ### Audacity:
-- Import the sound file you want in Audacy
+- Import the sound file you want in Audacity
 - Convert it to mono, if needed
 - on the bottom left, select project frequency 16000kHz
 - cut the sound to one engine cycle. Zoom in to find the exact zero crossing
