@@ -8,7 +8,7 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 - Sound files up to 8bit, 16kHz, mono can be used
 - works best with a PAM8403 amplifier module
 
-New in V 1.0:
+# New in V 1.0:
 - Runs on an ATMega328 with 8 or 16MHz clock (RC PWM throttle mode only on 16MHz)
 - More engine sounds added
 
