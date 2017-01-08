@@ -14,7 +14,7 @@ New in V 1.0:
 
 ## Ho to create new sound arrays:
 
-1. Audacity:
+### Audacity:
 - Import the sound file you want in Audacy
 - Convert it to mono, if needed
 - on the bottom left, select project frequency 16000kHz
@@ -22,14 +22,14 @@ New in V 1.0:
 - adjust the volume, so that the entire range is used
 - select > export audio > WAV > 8-bit-PCM
 
-2. Load and compile wav2c (this is for OS X):
+### Load and compile wav2c (this is for OS X):
 - download it from: https://github.com/olleolleolle/wav2c
 - compile it in terminal:
--- type "gcc" and space
--- drag and drop the files "main.c", wavdata.h", wavdata.c" into the terminal window.
--- press enter -> the executable is then compiled and stored as "youruserdirectory/a.out
+- type "gcc" and space
+- drag and drop the files "main.c", wavdata.h", wavdata.c" into the terminal window.
+- press enter -> the executable is then compiled and stored as "youruserdirectory/a.out
 
-3. processing the new header file with your sound
+### processing the new header file with your sound
 - copy an existing "enginesound.h" file, rename it with your new engine name
 - drag and drop "a.out" into your terminal
 - drag and drop the exported WAV file into your terminal
@@ -40,7 +40,7 @@ New in V 1.0:
 - change "signed char" to "unsigned char"
 - include this file in "settings.h"
 
-4. compiling the new sketch
+### compiling the new sketch
 - compile and upload the sketch in Arduino IDE
 - the new engine should now run...
 
