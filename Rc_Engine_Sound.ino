@@ -8,7 +8,7 @@
       readable, still some to do though.
       https://github.com/BeigeMatchbox/mojoEngineSim/blob/master/README.md
 
-      Enhancements, done by TheDIYGUY999 in january 2017:
+      Enhancements, done by TheDIYGUY999 in january 2017: https://github.com/TheDIYGuy999/Rc_Engine_Sound
         - more sounds added,
         - also works on a 8MHz MCU, but not in servo throttle mode
 */
