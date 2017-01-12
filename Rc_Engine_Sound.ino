@@ -16,12 +16,13 @@
 // All the required settings are done in settings.h!
 #include "settings.h" // <<------- SETTINGS
 
-const float codeVersion = 1.0; // Software revision
+const float codeVersion = 1.1; // Software revision
 
 // Stuff not to play with! ----------------------------------------------------------------------------
 #define SPEAKER 3                               // This is kept as 3, original code had 11 as option, but this conflicts with SPI
 volatile uint16_t currentSmpleRate = BASE_RATE; // Current playback rate, this is adjusted depending on engine RPM
 boolean audioRunning = false;                   // Audio state, used so we can toggle the sound system
+boolean engineOn = true;                        // Signal for engine on / off
 uint16_t curVolume = 0;                         // Current digi pot volume, used for fade in/out
 volatile uint16_t curEngineSample;              // Index of current loaded sample
 uint8_t  lastSample;                            // Last loaded sample
@@ -29,6 +30,7 @@ int16_t  currentThrottle = 0;                   // 0 - 1000, a top value of 1023
 uint8_t  throttleByte = 0;                      // Raw throttle position in SPI mode, gets mapped to currentThrottle
 uint8_t  spiReturnByte = 0;                     // The current RPM mapped to a byte for SPI return
 volatile int16_t pulseWidth = 0;                // Current pulse width when in PWM mode
+volatile boolean pulseAvailable;                  // RC signal pulses are coming in
 #define FREQ 16000000L                          // Always 16MHz, even if running on a 8MHz MCU!
 
 //
@@ -82,7 +84,10 @@ void setup()
 
 void loop() {
   if (potThrottle) doPotThrottle();
-  if (pwmThrottle) doPwmThrottle();
+  if (pwmThrottle) {
+    doPwmThrottle();
+    noPulse();
+  }
   if (spiThrottle) doSpiThrottle();
   if (managedThrottle) manageSpeed();
 }
@@ -105,17 +110,20 @@ void doPotThrottle() {
 
 // RC PWM signal -------------------------------------------------------------------------------------
 void doPwmThrottle() {
+
   if (pulseWidth > 800 && pulseWidth < 2200) { // check if the pulsewidth looks like a servo pulse
     if (pulseWidth < 1000) pulseWidth = 1000; // Constrain the value
     if (pulseWidth > 2000) pulseWidth = 2000;
 
-    if (pulseWidth > 1520) currentThrottle = (pulseWidth - 1500) * 2; // make a throttle value from the pulsewidth 0 - 1000
-    else if (pulseWidth < 1470) currentThrottle = abs( (pulseWidth - 1500) * 2);
+    if (pulseWidth > 1550) currentThrottle = (pulseWidth - 1500) * 2; // make a throttle value from the pulsewidth 0 - 1000
+    else if (pulseWidth < 1450) currentThrottle = abs( (pulseWidth - 1500) * 2);
     else currentThrottle = 0;
   }
 
-  // The current sample rate will be written later, if managed throttle is active
-  if (!managedThrottle) currentSmpleRate = FREQ / (BASE_RATE + long(currentThrottle * TOP_SPEED_MULTIPLIER));
+  if (!managedThrottle) {
+    // The current sample rate will be written later, if managed throttle is active
+    currentSmpleRate = FREQ / (BASE_RATE + long(currentThrottle * TOP_SPEED_MULTIPLIER));
+  }
 }
 
 // SPI bus signal -----------------------------------------------------------------------------------
@@ -150,19 +158,20 @@ void manageSpeed() {
   const  int16_t minRpm = 0;
 
   static unsigned long throtMillis;
+  static unsigned long startStopMillis;
   static unsigned long volMillis;
 
   // Engine RPM -------------------------------------------------------------------------------------
-  if (millis() - throtMillis > 5) {
+  if (millis() - throtMillis > 5) { // Every 5ms
     throtMillis = millis();
 
-    if (currentThrottle + 12 > currentRpm) {
+    if (currentThrottle + 18 > currentRpm) {
       currentRpm += 18;
       if (currentRpm > maxRpm) currentRpm = maxRpm;
       prevThrottle = currentThrottle;
 
     }
-    else if (currentThrottle - 15 < currentRpm) {
+    else if (currentThrottle - 12 < currentRpm) {
       currentRpm -= 12;
       if (currentRpm < minRpm) currentRpm = minRpm;
       prevThrottle = currentThrottle;
@@ -174,7 +183,6 @@ void manageSpeed() {
 
     currentSmpleRate = FREQ / (BASE_RATE + long(currentRpm * TOP_SPEED_MULTIPLIER) );
   }
-
 
   // Engine volume (for MCP4131 digipot only) -------------------------------------------------------
   if (millis() - volMillis > 50) {
@@ -260,7 +268,7 @@ void setupPcm()
   }
 }
 
-
+// ----------------------------------------------------------------------------------------------
 void stopPlayback()
 {
   // Fadeout the volume pot
@@ -281,6 +289,24 @@ void stopPlayback()
 
 //
 // =======================================================================================================
+// NO RC SIGNAL PULSE?
+// =======================================================================================================
+//
+
+void noPulse() {
+  static unsigned long pulseDelayMillis;
+
+  if (pulseAvailable) pulseDelayMillis = millis(); // reset delay timer, if pulses are available
+
+  if (millis() - pulseDelayMillis > 100) {
+    engineOn = false; // after 100ms delay, switch engine off
+    curEngineSample = 0; // go to first sample
+  }
+  else engineOn = true;
+}
+
+//
+// =======================================================================================================
 // INTERRUPTS
 // =======================================================================================================
 //
@@ -289,16 +315,17 @@ void stopPlayback()
 void getPulsewidth() {
   unsigned long currentMicros = micros();
   boolean currentState = PIND & B00000100; // Pin 2 is PIND Bit 2 (=digitalRead(2) )
-
   static unsigned long prevMicros = 0;
   static boolean lastState = LOW;
 
   if (lastState == LOW && currentState == HIGH) {    // Rising edge
     prevMicros = currentMicros;
+    pulseAvailable = true;
     lastState = currentState;
   }
   else if (lastState == HIGH && currentState == LOW) { // Falling edge
     pulseWidth = currentMicros - prevMicros;
+    pulseAvailable = false;
     lastState = currentState;
   }
 }
@@ -321,6 +348,9 @@ ISR(TIMER1_COMPA_vect) {
     curEngineSample = 0;
   }
 
-  OCR2B = pgm_read_byte(&idle_data[curEngineSample]);
-  ++curEngineSample;
+  if (engineOn) {
+    OCR2B = pgm_read_byte(&idle_data[curEngineSample]); // Volume
+    curEngineSample++;
+  }
+  else OCR2B = 255; // Stop engine (volume = 0)
 }

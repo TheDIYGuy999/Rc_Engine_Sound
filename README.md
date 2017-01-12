@@ -12,6 +12,9 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 - Runs on an ATMega328 with 8 or 16MHz clock (RC PWM throttle mode only on 16MHz)
 - More engine sounds added
 
+## New in V 1.1:
+- Engine sound is switched off, if there is no PWM signal detected on Pin 2. Works together with my "Micro RC" receiver."
+
 ## Ho to create new sound arrays:
 
 ### Audacity:
