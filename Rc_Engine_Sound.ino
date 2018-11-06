@@ -16,7 +16,7 @@
 // All the required settings are done in settings.h!
 #include "settings.h" // <<------- SETTINGS
 
-const float codeVersion = 1.1; // Software revision
+const float codeVersion = 1.2; // Software revision
 
 // Stuff not to play with! ----------------------------------------------------------------------------
 #define SPEAKER 3                               // This is kept as 3, original code had 11 as option, but this conflicts with SPI
@@ -33,14 +33,21 @@ volatile int16_t pulseWidth = 0;                // Current pulse width when in P
 volatile boolean pulseAvailable;                  // RC signal pulses are coming in
 #define FREQ 16000000L                          // Always 16MHz, even if running on a 8MHz MCU!
 
+int16_t pulseMaxNeutral; // PWM throttle configuration storage variables
+int16_t pulseMinNeutral;
+int16_t pulseMax;
+int16_t pulseMin;
+int16_t pulseMaxLimit;
+int16_t pulseMinLimit;
+
 //
 // =======================================================================================================
 // MAIN ARDUINO SETUP (1x during startup)
 // =======================================================================================================
 //
 
-void setup()
-{
+void setup() {
+
   // SPI slave mode
   pinMode(10, INPUT);  // Chip Select
   pinMode(12, OUTPUT); // MISO pin, this is for ATMEGA328/168
@@ -71,6 +78,14 @@ void setup()
   if (pwmThrottle) { // And we don't want the interrupt firing when not in pwm mode
     attachInterrupt(0, getPulsewidth, CHANGE);
   }
+
+  // Calculate throttle range
+  pulseMaxNeutral = pulseZero + pulseNeutral;
+  pulseMinNeutral = pulseZero - pulseNeutral;
+  pulseMax = pulseZero + pulseSpan;
+  pulseMin = pulseZero - pulseSpan;
+  pulseMaxLimit = pulseZero + pulseLimit;
+  pulseMinLimit = pulseZero - pulseLimit;
 
   // setup complete, so start making sounds
   setupPcm();
@@ -111,12 +126,12 @@ void doPotThrottle() {
 // RC PWM signal -------------------------------------------------------------------------------------
 void doPwmThrottle() {
 
-  if (pulseWidth > 800 && pulseWidth < 2200) { // check if the pulsewidth looks like a servo pulse
-    if (pulseWidth < 1000) pulseWidth = 1000; // Constrain the value
-    if (pulseWidth > 2000) pulseWidth = 2000;
+  if (pulseWidth > pulseMinLimit && pulseWidth < pulseMaxLimit) { // check if the pulsewidth looks like a servo pulse
+    if (pulseWidth < pulseMin) pulseWidth = pulseMin; // Constrain the value
+    if (pulseWidth > pulseMax) pulseWidth = pulseMax;
 
-    if (pulseWidth > 1550) currentThrottle = (pulseWidth - 1500) * 2; // make a throttle value from the pulsewidth 0 - 1000
-    else if (pulseWidth < 1450) currentThrottle = abs( (pulseWidth - 1500) * 2);
+    if (pulseWidth > pulseMaxNeutral) currentThrottle = (pulseWidth - pulseZero) * 2; // make a throttle value from the pulsewidth 0 - 1000
+    else if (pulseWidth < pulseMinNeutral) currentThrottle = abs( (pulseWidth - pulseZero) * 2);
     else currentThrottle = 0;
   }
 
@@ -224,8 +239,8 @@ void writePot(uint8_t data) {
 // =======================================================================================================
 //
 
-void setupPcm()
-{
+void setupPcm() {
+  
   pinMode(SPEAKER, OUTPUT);
   audioRunning = true;
 
@@ -269,8 +284,8 @@ void setupPcm()
 }
 
 // ----------------------------------------------------------------------------------------------
-void stopPlayback()
-{
+void stopPlayback() {
+  
   // Fadeout the volume pot
   for (uint8_t i = curVolume; i > 0; i--) {
     curVolume = i;

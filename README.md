@@ -13,7 +13,10 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 - More engine sounds added
 
 ## New in V 1.1:
-- Engine sound is switched off, if there is no PWM signal detected on Pin 2. Works together with my "Micro RC" receiver."
+- Engine sound is switched off, if there is no PWM signal detected on Pin 2. Works together with my "Micro RC" receiver.
+
+## New in V 1.2:
+- PWM throttle range now adjustable in settings.h
 
 ## Ho to create new sound arrays:
 
