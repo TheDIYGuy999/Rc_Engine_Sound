@@ -6,8 +6,10 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 ## Features:
 - Many selectable engine sounds and startup sounds for cars and trucks
 - Sound files up to 8bit, 16kHz, mono can be used
-- works best with a PAM8403 amplifier module, connected to pin 3, via a 10kOhm potentiometer
+- Works best with a PAM8403 amplifier module, connected to pin 3, via a 10kOhm potentiometer
 - The engine RPM is calculated according to RC signal input on pin 2
+- Gear shifting is simulated in "curves.h"
+- Use an Arduino Pro Mini 5V, 16MHz
 
 ## New in V 1.0:
 - Runs on an ATMega328 with 8 or 16MHz clock (RC PWM throttle mode only on 16MHz)
@@ -21,12 +23,16 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 
 ## New in V 1.3:
 - code cleaned up, removed unused SPI and digipot support, removed 8MHz support (was for SPI mode only)
-- Scania V8 and URAL-4320 V8 sounds added, including start sounds
+- Scania V8 and URAL-4320 V8 Diesel sounds added, including start sounds
 - fader for engine switch off phase added
 - throttle auto zero calibration added
 - simulated gearbox shifting points in "curves.h"
 - boolean variable "engineManualOnOff" ensures compatibility with older projects (Mustang 68)
 - engine is switching on or off depending on the throttle input or the presence of the RC signal (see above)
+
+## New in V 1.31:
+- mapThrottle() cleaned up, scaling bug fixed, throttle auto zero calibration now working correctly
+- adjust "pulseSpan" in "settings.h" according to your ESC / receiver settings
 
 ## Ho to create new sound arrays:
 

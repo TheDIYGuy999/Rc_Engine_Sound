@@ -20,7 +20,7 @@
 // All the required vehicle specific settings are done in settings.h!
 #include "settings.h" // <<------- SETTINGS
 
-const float codeVersion = 1.3; // Software revision
+const float codeVersion = 1.31; // Software revision
 
 //
 // =======================================================================================================
@@ -150,9 +150,9 @@ void mapThrottle() {
     if (pulseWidth < pulseMin) pulseWidth = pulseMin; // Constrain the value
     if (pulseWidth > pulseMax) pulseWidth = pulseMax;
 
-    // make a throttle value from the pulsewidth 0 - 1000
-    if (pulseWidth > pulseMaxNeutral) currentThrottle = (pulseWidth - pulseZero) * 2;
-    else if (pulseWidth < pulseMinNeutral) currentThrottle = abs( (pulseWidth - pulseZero) * 2);
+    // calculate a throttle value from the pulsewidth signal
+    if (pulseWidth > pulseMaxNeutral) currentThrottle = map(pulseWidth, pulseMaxNeutral, pulseMax, 0, 500);
+    else if (pulseWidth < pulseMinNeutral) currentThrottle = map(pulseWidth, pulseMinNeutral, pulseMin, 0, 500);
     else currentThrottle = 0;
   }
 }
@@ -213,7 +213,7 @@ void engineOnOff() {
   }
   else { // Engine automatically switched on or off depending on throttle position and 15s delay timne
     if (currentThrottle > 80) idleDelayMillis = millis(); // reset delay timer, if throttle not in neutral
-    
+
     if (millis() - idleDelayMillis > 15000) {
       engineOn = false; // after delay, switch engine off
     }
@@ -315,7 +315,7 @@ ISR(TIMER1_COMPA_vect) {
       //OCR1A = fixedSmpleRate * attenuator; // engine slowing down
       OCR2B = pgm_read_byte(&idle_data[curEngineSample]) / attenuator;
       curEngineSample++;
-      attenuator += 0.002; // fade engine sound out 0.002
+      attenuator += 0.001; // fade engine sound out 0.002
       if (attenuator >= 20) {  // 3 - 20
         engineOn = false;
         if (!engineOn) engineState = 0; // Important: ensure, that engine is off, before we go back to "starting"!!

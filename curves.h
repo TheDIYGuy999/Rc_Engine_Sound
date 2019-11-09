@@ -6,7 +6,7 @@
 
 // In order to optimize the motor RPM behaviour for your vehicle, just change the array below
 
-float curveShifting[][2] = {  // see excel sheet!
+float curveShifting[][2] = { 
   {0, 0} // {input value, output value}
   , {83, 200}
   , {166, 500}

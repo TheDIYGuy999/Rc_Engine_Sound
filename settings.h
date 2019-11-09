@@ -21,8 +21,8 @@
 
 // PWM Throttle range calibration -----------------------------------------------------------------------------------
 int16_t pulseZero = 1500; // Usually 1500 (range 1000 - 2000us) Autocalibration active, if "engineManualOnOff" = "false"
-int16_t pulseNeutral = 10; // pulseZero +/- this value
-int16_t pulseSpan = 200; // pulseZero +/- this value (500) WPL B36 = 300
+int16_t pulseNeutral = 20; // pulseZero +/- this value
+int16_t pulseSpan = 450; // pulseZero +/- this value (150 for JMT 10A ESC, otherwise around 450)
 int16_t pulseLimit = 700; // pulseZero +/- this value (700)
 
 // Engine parameters ------------------------------------------------------------------------------------------------
