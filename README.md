@@ -33,6 +33,7 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 ## New in V 1.31:
 - mapThrottle() cleaned up, scaling bug fixed, throttle auto zero calibration now working correctly
 - adjust "pulseSpan" in "settings.h" according to your ESC / receiver settings
+- schematic and pictures added
 
 ## Ho to create new sound arrays:
 
@@ -69,6 +70,11 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 
 ## Schematic:
 ![](https://github.com/TheDIYGuy999/Rc_Engine_Sound/blob/master/wiring.jpg)
+
+## Pictures (including optional additional filtering):
+![](https://github.com/TheDIYGuy999/Rc_Engine_Sound/blob/master/top.jpg)
+
+![](https://github.com/TheDIYGuy999/Rc_Engine_Sound/blob/master/bottom.jpg)
 
 
 2017 - 2019, TheDIYGuy999
