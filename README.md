@@ -67,5 +67,8 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 - compile and upload the sketch in Arduino IDE
 - the new engine should now run...
 
+## Schematic:
+![](https://github.com/TheDIYGuy999/Rc_Engine_Sound/blob/master/wiring.jpg)
+
 
 2017 - 2019, TheDIYGuy999
