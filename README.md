@@ -1,7 +1,9 @@
-#This is an Arduino engine sound generator.
+# This is an Arduino RC engine sound generator.
 It's based on the mojoEngineSim: https://github.com/BeigeMatchbox/mojoEngineSim
 
 GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
+
+Video: https://www.youtube.com/watch?v=EaOJE_GU5pk&t=58s (showing version 1.2)
 
 ## Features:
 - Many selectable engine sounds and startup sounds for cars and trucks
