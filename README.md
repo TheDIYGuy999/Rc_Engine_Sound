@@ -5,6 +5,8 @@ GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
 
 Video: https://www.youtube.com/watch?v=EaOJE_GU5pk&t=58s (showing version 1.2)
 
+STL data for 3D printed housing: https://www.thingiverse.com/thing:2814025
+
 ## Features:
 - Many selectable engine sounds and startup sounds for cars and trucks
 - Sound files up to 8bit, 16kHz, mono can be used
