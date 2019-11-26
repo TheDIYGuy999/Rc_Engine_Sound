@@ -39,6 +39,10 @@ STL data for 3D printed housing: https://www.thingiverse.com/thing:2814025
 - adjust "pulseSpan" in "settings.h" according to your ESC / receiver settings
 - schematic and pictures added
 
+## New in V 1.32:
+- added the requested V8 trophy truck sound
+- optimized the generic "V8" sound to fit the memory in combination with the Ural start sound
+
 ## Ho to create new sound arrays:
 
 ### Audacity:
