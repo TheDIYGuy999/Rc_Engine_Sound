@@ -20,7 +20,7 @@
 // All the required vehicle specific settings are done in settings.h!
 #include "settings.h" // <<------- SETTINGS
 
-const float codeVersion = 1.32; // Software revision
+const float codeVersion = 1.33; // Software revision
 
 //
 // =======================================================================================================

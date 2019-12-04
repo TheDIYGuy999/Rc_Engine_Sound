@@ -43,6 +43,9 @@ STL data for 3D printed housing: https://www.thingiverse.com/thing:2814025
 - added the requested V8 trophy truck sound
 - optimized the generic "V8" sound to fit the memory in combination with the Ural start sound
 
+## New in V 1.33:
+- added the Defender V8 sounds (I forgot to upload them)
+
 ## Ho to create new sound arrays:
 
 ### Audacity:
