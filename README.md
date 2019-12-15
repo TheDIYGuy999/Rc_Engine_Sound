@@ -1,4 +1,7 @@
-# This is an Arduino RC engine sound generator.
+# This is an Arduino RC engine sound generator
+
+THIS PROJECT IS DEPRECATED! See new ESP32 version: https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32
+
 It's based on the mojoEngineSim: https://github.com/BeigeMatchbox/mojoEngineSim
 
 GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
