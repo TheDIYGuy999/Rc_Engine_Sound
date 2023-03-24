@@ -1,12 +1,16 @@
 # This is an Arduino RC engine sound generator
-
-THIS PROJECT IS DEPRECATED! See new ESP32 version: https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32
-
+the source is taken from TheDIYGuy999 which currently focusing on ESP32 https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32
 It's based on the mojoEngineSim: https://github.com/BeigeMatchbox/mojoEngineSim
-
 GitHub repo: https://github.com/TheDIYGuy999/Rc_Engine_Sound
-
 Video: https://www.youtube.com/watch?v=EaOJE_GU5pk&t=58s (showing version 1.2)
+
+Im continuing his deprecated work on atmega version as i only have the arduino nano and pro right now
+My TX is Flysky GT3C with semerad firmware https://github.com/semerad/gt3b/tree/master/Releases
+and FS-R9B an 8ch receiver.
+
+THIS IS UNFINISHED PROJECT (will erase this as i finished)
+
+
 
 STL data for 3D printed housing: https://www.thingiverse.com/thing:2814025
 
