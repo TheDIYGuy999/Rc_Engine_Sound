@@ -41,6 +41,18 @@ const float codeVersion = 1.33; // Software revision
 
 #define FREQ 16000000L                          // 16MHz clock frequency
 
+int blinkLeft = A4;
+int blinkRight = A5;
+int reverseLight = A2;
+int headLight = A3;
+int brakeLight = A1;
+int remoteC1 = 4;
+int remoteC2 = 2;
+int remoteC3 = 6  ;
+int ch1;
+int ch2;
+int ch3;
+
 // Define global variables
 volatile uint16_t currentSmpleRate = BASE_RATE; // Current playback rate, this is adjusted depending on engine RPM
 volatile uint16_t fixedSmpleRate = FREQ / BASE_RATE; // Current playback rate, this is adjusted depending on engine RPM
@@ -75,6 +87,20 @@ void setup() {
 
   // wait for RC receiver to initialize
   delay(1000);
+
+  //LAMP PIN:
+  pinMode(blinkLeft, OUTPUT);
+  pinMode(blinkRight, OUTPUT);
+  pinMode(reverseLight, OUTPUT);
+  pinMode(headLight, OUTPUT);
+  pinMode(brakeLight, OUTPUT);
+  pinMode(remoteC1, INPUT);
+  pinMode(remoteC2, INPUT);
+  pinMode(remoteC3, INPUT);
+  Serial.begin(9600);
+
+
+
 
   // then compute the RC channel offset (only, if "engineManualOnOff" inactive)
   if (!engineManualOnOff) pulseZero = pulseWidth;
@@ -133,6 +159,8 @@ void setupPcm() {
   //curHornSample = 0;
 
   sei();
+
+
 }
 
 //
@@ -151,9 +179,21 @@ void mapThrottle() {
     if (pulseWidth > pulseMax) pulseWidth = pulseMax;
 
     // calculate a throttle value from the pulsewidth signal
-    if (pulseWidth > pulseMaxNeutral) currentThrottle = map(pulseWidth, pulseMaxNeutral, pulseMax, 0, 500);
-    else if (pulseWidth < pulseMinNeutral) currentThrottle = map(pulseWidth, pulseMinNeutral, pulseMin, 0, 500);
-    else currentThrottle = 0;
+    if (pulseWidth > pulseMaxNeutral) {
+      currentThrottle = map(pulseWidth, pulseMaxNeutral, pulseMax, 0, 500);
+      digitalWrite(brakeLight, LOW);
+      digitalWrite(reverseLight, LOW);
+    }
+    else if (pulseWidth < pulseMinNeutral) {
+      currentThrottle = map(pulseWidth, pulseMinNeutral, pulseMin, 0, 500);
+      digitalWrite(brakeLight, LOW);
+      digitalWrite(reverseLight, HIGH);
+    }
+    else {
+      currentThrottle = 0;
+      digitalWrite(brakeLight, HIGH);
+      digitalWrite(reverseLight, LOW);
+    }
   }
 }
 
@@ -179,6 +219,7 @@ void engineMassSimulation() {
     if (mappedThrottle + acc > currentRpm && engineState == 2) {
       currentRpm += acc;
       if (currentRpm > maxRpm) currentRpm = maxRpm;
+
     }
 
     // Decelerate engine
@@ -241,9 +282,60 @@ void loop() {
 
   // Switch engine on or off
   engineOnOff();
+
+  ch1 = pulseIn(remoteC1, HIGH);
+  Serial.print("ch1 = ");
+  Serial.println(ch1);
+  ch2 = pulseIn(remoteC2, HIGH);
+  //Serial.print("ch2 = ");
+  //Serial.println(ch2);
+  ch3 = pulseIn(remoteC3, HIGH);
+  Serial.print("ch3 = ");
+  Serial.println(ch3);
+
+  //Head Lamp
+  if(ch3 >= 1400){   //check the signal using serial monitor
+    digitalWrite(headLight, HIGH);
+  }
+  else {
+    digitalWrite(headLight, LOW);
+  }
+
+  //signal lamp
+  if (ch1 == 0){
+    hazard();
+  }
+  if (ch1 >= 1350) //read serial monitor and put max value
+    {
+      digitalWrite(blinkLeft, HIGH);
+      delay(250);
+      digitalWrite(blinkLeft, LOW);
+      delay(250);
+    }
+    if (ch1 <= 1000 && ch1 != 0) //read serial monitor and put minimum value
+    {
+      digitalWrite(blinkRight, HIGH);
+      delay(250);
+      digitalWrite(blinkRight, LOW);
+      delay(250);
+    }
+  
+
 }
 
+// ==============================
+//LAMP MODE//
+//===============================
 //
+
+void hazard(){
+  digitalWrite(blinkLeft, HIGH);
+  digitalWrite(blinkRight, HIGH);
+  delay(250);
+  digitalWrite(blinkLeft, LOW);
+  digitalWrite(blinkRight, LOW);
+  delay(250);
+}
 // =======================================================================================================
 // INTERRUPTS
 // =======================================================================================================
